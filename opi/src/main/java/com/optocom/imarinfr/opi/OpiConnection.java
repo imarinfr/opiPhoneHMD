@@ -57,7 +57,8 @@ public class OpiConnection extends Thread {
         try {
             ServerSocket server = new ServerSocket(LOCALPORT, 1);
             Socket client;
-            while(true) {
+            //noinspection InfiniteLoopStatement
+            do {
                 if (!opiOpened) {
                     client = server.accept();
                     in = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -67,7 +68,7 @@ public class OpiConnection extends Thread {
                     msg = in.readLine(); // read message
                     pars = "";
                     // if no parameters are found
-                    if(!msg.contains(" ")) cmd = msg;
+                    if (!msg.contains(" ")) cmd = msg;
                     else {
                         cmd = msg.substring(0, msg.indexOf(" "));
                         pars = msg.substring(msg.indexOf(" ") + 1); // get params, if any
@@ -77,7 +78,7 @@ public class OpiConnection extends Thread {
                         opiOpened = false;
                     } else processCommand(cmd, pars.split(" ")); // perform command
                 }
-            }
+            } while (true);
         } catch (IOException e) {
             e.printStackTrace();
         }
