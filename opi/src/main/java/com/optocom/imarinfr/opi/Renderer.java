@@ -61,11 +61,9 @@ public class Renderer implements GLSurfaceView.Renderer {
             while(trialRunning && dt < stim.tstep[step]) {
                 dt = System.currentTimeMillis() - t0;
             }
-        }
-        // wait until minimum presentation time has passed
-        while(timeSinceOnset < stim.d) {
             timeSinceOnset = System.currentTimeMillis() - startTime;
         }
+
         // clean stimulus
         stim = new Stimulus();
         step = 0;
@@ -80,8 +78,11 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     public void onTriggerEvent() {
         long minResponseTime = 100;
-        if(trialRunning & timeSinceOnset > minResponseTime & timeSinceOnset < stim.w) {
+        if(trialRunning & timeSinceOnset > minResponseTime) {
             responseTime = timeSinceOnset;
+            // if outside response window, then response time = 0
+             if(responseTime > stim.w)
+                 responseTime = 0;
             // wait at least until minimum stimulus presentation time is reached
             while(timeSinceOnset < stim.d) {
                 timeSinceOnset = System.currentTimeMillis() - startTime;
