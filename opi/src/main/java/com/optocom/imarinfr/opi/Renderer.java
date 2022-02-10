@@ -1,8 +1,9 @@
 package com.optocom.imarinfr.opi;
 
+import android.opengl.GLSurfaceView;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-import android.opengl.GLSurfaceView;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
@@ -13,9 +14,10 @@ public class Renderer implements GLSurfaceView.Renderer {
     private Stimulus stim = new Stimulus();
     private int step = 0;
 
-    private boolean trialRunning = false;
+    private boolean canClick = false;
+    private boolean clicked = false;
     private long startTime = 0;
-    private long timeSinceOnset;
+    private long timeSinceOnset = 0;
     private long responseTime = 0;
     public Renderer(long mainNativeApp, GLSurfaceView mainGlView) {
         nativeApp = mainNativeApp;
@@ -46,53 +48,57 @@ public class Renderer implements GLSurfaceView.Renderer {
         glView.requestRender(); // update background
     }
 
-    public void presentStimulus(Stimulus newstim) {
-        stim = newstim;
-        long t0, dt;
-        startTime      = System.currentTimeMillis();
-        timeSinceOnset = System.currentTimeMillis() - startTime;
-        trialRunning = true;
+    public void presentStimulus(Stimulus newStim) {
+        long minResponseTime = 100;
 
+        stim = newStim;
+        long w = stim.w;
+        canClick = false;
+        clicked = false;
+        timeSinceOnset = 0;
+        responseTime = 0;
+        // render stimulus and manage response
+        new Thread(this::renderStimulus).start();
+        startTime = System.currentTimeMillis();
+        // block until we can respond, then open response window
+        while(timeSinceOnset < minResponseTime)
+            timeSinceOnset = System.currentTimeMillis() - startTime;
+        canClick = true;
+        // keep open until either there has been a response
+        // or allotted response time is over
+        while(!clicked && timeSinceOnset < w)
+            timeSinceOnset = System.currentTimeMillis() - startTime;
+        canClick = false;
+    }
+
+    private void renderStimulus() {
+        long t0, dt;
         for(int i = 0; i < stim.nsteps; i++) {
             step = i;
             glView.requestRender(); // render stimulus
             t0 = System.currentTimeMillis();
             dt = 0;
-            while(trialRunning && dt < stim.tstep[step]) {
+            while(dt < stim.tstep[step]) {
                 dt = System.currentTimeMillis() - t0;
             }
-            timeSinceOnset = System.currentTimeMillis() - startTime;
+            // if we got a valid response and minimum presentation
+            // time is over, clean stimulus
+            if(clicked && System.currentTimeMillis() - startTime > stim.d)
+                break;
         }
-
-        // clean stimulus
+        // if responded clean stimulus
         stim = new Stimulus();
         step = 0;
         glView.requestRender();
-        // while there is no response (aka trial still running),
-        // wait to extinguish response window
-        while(trialRunning && timeSinceOnset < stim.w) {
-            timeSinceOnset = System.currentTimeMillis() - startTime;
-        }
-        trialRunning = false;
     }
 
     public void onTriggerEvent() {
-        long minResponseTime = 100;
-        if(trialRunning & timeSinceOnset > minResponseTime) {
+        // if can respond
+        if(canClick) {
             responseTime = timeSinceOnset;
-            // if outside response window, then response time = 0
-             if(responseTime > stim.w)
-                 responseTime = 0;
-            // wait at least until minimum stimulus presentation time is reached
-            while(timeSinceOnset < stim.d) {
-                timeSinceOnset = System.currentTimeMillis() - startTime;
-            }
-            trialRunning = false;
+            clicked = true;
+            canClick = false;
         }
-    }
-
-    public boolean trialRunning() {
-        return trialRunning;
     }
 
     public long responseTime() {

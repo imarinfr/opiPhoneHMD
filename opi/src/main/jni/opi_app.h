@@ -140,7 +140,7 @@ namespace ndk_opi {
         /**
          * Draws the stimulus.
          */
-        void DrawStimulus(float cx, float cy, float rx, float ry, float theta,
+        void DrawStimulus(float cx, float cy, float sx, float sy, float theta,
                           float lum, float col[]);
 
         /**

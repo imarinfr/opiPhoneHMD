@@ -97,7 +97,7 @@ public class Stimulus {
     }
 
     public boolean areGlobalParsValid() {
-        return (nsteps > 0 && d > 0 && w > d);
+        return (nsteps > 0 && d > 0 && w > 0);
     }
 
     public boolean areStepParsValid(int step) {

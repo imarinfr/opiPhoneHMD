@@ -334,7 +334,9 @@ namespace ndk_opi {
       glUseProgram(obj_program);
       sx = degOfViewToLength(kFixationTargetDistance, DegreesToRadians(sx));
       sy = degOfViewToLength(kFixationTargetDistance, DegreesToRadians(sy));
-      model_fixation_target     = GetAffineMatrix(sx, sy, DegreesToRadians(theta), {cx, cy, kFixationTargetDistance});
+      cx = degOfViewToLength(kFixationTargetDistance, DegreesToRadians(cx));
+      cy = degOfViewToLength(kFixationTargetDistance, DegreesToRadians(cy));
+      model_fixation_target = GetAffineMatrix(sx, sy, DegreesToRadians(theta), {cx, cy, kFixationTargetDistance});
       modelview_fixation_target = projection_matrix * model_fixation_target;
       std::array<float, 16> position = modelview_fixation_target.ToGlArray();
       glUniformMatrix4fv(0, 1, GL_FALSE, position.data());
@@ -343,11 +345,13 @@ namespace ndk_opi {
       CHECKGLERROR("DrawFixationTarget");
     }
 
-    void OpiApp::DrawStimulus(float cx, float cy,  float rx, float ry, float theta,
+    void OpiApp::DrawStimulus(float cx, float cy,  float sx, float sy, float theta,
                               float lum, float col[]) {
       glUseProgram(obj_program);
-      float sx = degOfViewToLength(kStimulusDistance, DegreesToRadians(rx));
-      float sy = degOfViewToLength(kStimulusDistance, DegreesToRadians(ry));
+      sx = degOfViewToLength(kStimulusDistance, DegreesToRadians(sx));
+      sy = degOfViewToLength(kStimulusDistance, DegreesToRadians(sy));
+      cx = degOfViewToLength(kStimulusDistance, DegreesToRadians(cx));
+      cy = degOfViewToLength(kStimulusDistance, DegreesToRadians(cy));
       model_stimulus     = GetAffineMatrix(sx, sy, DegreesToRadians(theta), {cx, cy, kStimulusDistance});
       modelview_stimulus = projection_matrix * model_stimulus;
       std::array<float, 16> position = modelview_stimulus.ToGlArray();

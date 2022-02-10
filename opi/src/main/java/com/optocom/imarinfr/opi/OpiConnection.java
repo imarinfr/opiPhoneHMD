@@ -1,10 +1,16 @@
 package com.optocom.imarinfr.opi;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.os.Build;
+import android.util.DisplayMetrics;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -12,12 +18,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
-import java.lang.String;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
-import android.os.Build;
-import android.util.DisplayMetrics;
 
 import androidx.annotation.RequiresApi;
 
@@ -160,7 +160,6 @@ public class OpiConnection extends Thread {
     }
 
     public void opiPresent(String[] pars) {
-        boolean trialRunning = true;
         long time;
         String seen;
         String errorMsg = "";
@@ -183,8 +182,6 @@ public class OpiConnection extends Thread {
             // if still correct, inform client, then present
             if(correct) {
                 renderer.presentStimulus(stim);
-                // block until at least minimum presentation time stim.d has passed
-                while(trialRunning) trialRunning = renderer.trialRunning();
                 time = renderer.responseTime();
                 if(time > 0) seen  = "true";
                 else         seen  = "false";
