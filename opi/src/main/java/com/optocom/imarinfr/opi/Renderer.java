@@ -53,6 +53,7 @@ public class Renderer implements GLSurfaceView.Renderer {
 
         stim = newStim;
         long w = stim.w;
+        long d = stim.d;
         canClick = false;
         clicked = false;
         timeSinceOnset = 0;
@@ -64,10 +65,15 @@ public class Renderer implements GLSurfaceView.Renderer {
         while(timeSinceOnset < minResponseTime)
             timeSinceOnset = System.currentTimeMillis() - startTime;
         canClick = true;
-        // keep open until either there has been a response
-        // or allotted response time is over
-        while(!clicked && timeSinceOnset < w)
+        // keep the response window open until time allotted to
+        // respond expires
+        while(timeSinceOnset < w) {
             timeSinceOnset = System.currentTimeMillis() - startTime;
+            // if minimum presentation time is over and there
+            // was a click, then exit loop
+             if(timeSinceOnset > d && clicked)
+                 break;
+        }
         canClick = false;
     }
 
