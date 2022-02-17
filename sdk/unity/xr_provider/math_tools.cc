@@ -21,6 +21,7 @@
 namespace cardboard::unity {
 namespace {
 
+// TODO(b/151817737): Compute pose position within SDK with custom rotation.
 UnityXRVector4 QuatMul(const UnityXRVector4& q0, const UnityXRVector4& q1) {
   UnityXRVector4 result;
   result.x = q0.w * q1.x + q0.x * q1.w + q0.y * q1.z - q0.z * q1.y;
@@ -30,6 +31,7 @@ UnityXRVector4 QuatMul(const UnityXRVector4& q0, const UnityXRVector4& q1) {
   return result;
 }
 
+// TODO(b/151817737): Compute pose position within SDK with custom rotation.
 UnityXRVector3 QuatMulVec(const UnityXRVector4& q, const UnityXRVector3& v) {
   const UnityXRVector4 p = {v.x, v.y, v.z, 0.0f};
   const UnityXRVector4 pre_mul = QuatMul(q, p);
@@ -38,6 +40,7 @@ UnityXRVector3 QuatMulVec(const UnityXRVector4& q, const UnityXRVector3& v) {
   return {result.x, result.y, result.z};
 }
 
+// TODO(b/151817737): Compute pose position within SDK with custom rotation.
 UnityXRVector3 ApplyNeckModel(const UnityXRVector4& rotation) {
   // Position of the point between the eyes, relative to the neck pivot:
   const float kDefaultNeckHorizontalOffset = 0.080f;  // meters in Z
@@ -122,11 +125,14 @@ UnityXRPose CardboardRotationToUnityPose(const std::array<float, 4>& rotation) {
   //   2. Apply the inverse rotation to the provided position.
   //   3. Modify the position vector to suit Unity's coordinates frame.
   //   4. Apply the new rotation (Unity's coordinates frame).
+  // TODO(b/151817737): Compute pose position within SDK with custom rotation.
   result.position = ApplyNeckModel(result.rotation);
 
   return result;
 }
 
+// TODO(b/155113586): refactor this function to be part of the same
+//                    transformation as the above.
 UnityXRPose CardboardTransformToUnityPose(
     const std::array<float, 16>& transform) {
   UnityXRPose ret;

@@ -58,6 +58,8 @@ static NSString *const kCardboardDeviceParamsAndTimeKey =
         }
         completion([CardboardDeviceParamsHelper parseURL:targetUrl], error);
       }];
+  // TODO(b/185123397): NSURLConnection is deprecated. This should be changed to use NSURLSession
+  // instead.
   NSURLConnection *connection = [NSURLConnection connectionWithRequest:request
                                                               delegate:dataHandler];
   [connection start];

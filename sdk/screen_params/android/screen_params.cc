@@ -33,6 +33,7 @@ struct DisplayMetrics {
   float ydpi;
 };
 
+// TODO(b/180938531): Release these global references.
 void LoadJNIResources(JNIEnv* env) {
   screen_params_utils_class_ =
       reinterpret_cast<jclass>(env->NewGlobalRef(cardboard::jni::LoadJClass(

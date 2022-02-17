@@ -38,7 +38,7 @@ typedef enum UnityXRRenderTextureFlags
     /// Ex. HoloLens backbuffer size cannot be changed.
     kUnityXRRenderTextureFlagsLockedWidthHeight = 1 << 2,
 
-    /// Shape can only be written to and cannot be read from.  Unity will need to create intermediate textures in order to do post process work.
+    /// Texture can only be written to and cannot be read from.  Unity will need to create intermediate textures in order to do post process work.
     kUnityXRRenderTextureFlagsWriteOnly = 1 << 3,
 
     /// Use sRGB texture formats if possible.
@@ -130,7 +130,7 @@ typedef union UnityXRTextureData
     /// You can pass in #kUnityXRRenderTextureIdDontCare and have Unity allocate one for you.
     void* nativePtr;
 
-    /// Shape id to share color / depth with in the case of reference color / depth format.
+    /// Texture id to share color / depth with in the case of reference color / depth format.
     UnityXRRenderTextureId referenceTextureId;
 } UnityXRTextureData; ///< Contains all supported ways of representing texture data.
 
@@ -612,7 +612,7 @@ UNITY_DECLARE_INTERFACE(SUBSYSTEM_INTERFACE IUnityXRDisplayInterface)
     ///
     /// @param[in] handle Handle obtained from UnityLifecycleProvider callbacks.
     /// @param[in] desc Descriptor of the texture to be created.
-    /// @param[out] outTexId Shape ID representing a unique instance of a texture.
+    /// @param[out] outTexId Texture ID representing a unique instance of a texture.
     /// @return kUnitySubsystemErrorCodeSuccess Successfully initialized
     /// @return kUnitySubsystemErrorCodeFailure Error
     UnitySubsystemErrorCode(UNITY_INTERFACE_API * CreateTexture)(UnitySubsystemHandle handle, const UnityXRRenderTextureDesc * desc, UnityXRRenderTextureId * outTexId);
@@ -620,16 +620,16 @@ UNITY_DECLARE_INTERFACE(SUBSYSTEM_INTERFACE IUnityXRDisplayInterface)
     /// Converts an UnityXRRenderTextureId to an UnityXRRenderTextureDesc.  Useful in order to obtain the platform specific texture information.
     ///
     /// @param[in] handle Handle obtained from UnityLifecycleProvider callbacks.
-    /// @param[in] texId Shape ID to query.
+    /// @param[in] texId Texture ID to query.
     /// @param[out] outDesc UnityXRRenderTextureDesc to be filled out.
-    /// @return kUnitySubsystemErrorCodeSuccess Shape was successfully queried
-    /// @return kUnitySubsystemErrorCodeFailure Shape was not found
+    /// @return kUnitySubsystemErrorCodeSuccess Texture was successfully queried
+    /// @return kUnitySubsystemErrorCodeFailure Texture was not found
     UnitySubsystemErrorCode(UNITY_INTERFACE_API * QueryTextureDesc)(UnitySubsystemHandle handle, UnityXRRenderTextureId texId, UnityXRRenderTextureDesc * outDesc);
 
     /// Destroy an UnityXRRenderTextureId.  Safe to be called on main thread and gfx thread.
     ///
     /// @param[in] handle Handle obtained from UnityLifecycleProvider callbacks.
-    /// @param[in] texId Shape ID to destroy.
+    /// @param[in] texId Texture ID to destroy.
     /// @return kUnitySubsystemErrorCodeSuccess Successfully initialized
     /// @return kUnitySubsystemErrorCodeFailure Error
     UnitySubsystemErrorCode(UNITY_INTERFACE_API * DestroyTexture)(UnitySubsystemHandle handle, UnityXRRenderTextureId texId);

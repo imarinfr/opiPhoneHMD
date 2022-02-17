@@ -25,6 +25,7 @@ namespace cardboard {
 
 // The Matrix3x3 class defines a square 3-dimensional matrix. Elements are
 // stored in row-major order.
+// TODO(b/135461889): Make this class consistent with Matrix4x4.
 class Matrix3x3 {
  public:
   // The default constructor zero-initializes all elements.

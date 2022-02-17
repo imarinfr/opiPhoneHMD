@@ -45,7 +45,8 @@ void CheckGlError(const char* file, int line, const char* label) {
   }
 }
 
-
+// TODO(b/155457703): De-dupe GL utility function here and in
+// distortion_renderer.cc
 GLuint LoadShader(GLenum shader_type, const char* source) {
   GLuint shader = glCreateShader(shader_type);
   glShaderSource(shader, 1, &source, nullptr);
@@ -71,6 +72,8 @@ GLuint LoadShader(GLenum shader_type, const char* source) {
   return shader;
 }
 
+// TODO(b/155457703): De-dupe GL utility function here and in
+// distortion_renderer.cc
 GLuint CreateProgram(const char* vertex, const char* fragment) {
   GLuint vertex_shader = LoadShader(GL_VERTEX_SHADER, vertex);
   if (vertex_shader == 0) {

@@ -35,6 +35,7 @@ jclass intent_class_;
 jclass component_name_class_;
 std::atomic<int> device_params_changed_count_(0);
 
+// TODO(b/180938531): Release these global references.
 void LoadJNIResources(JNIEnv* env) {
   cardboard_params_utils_class_ =
       reinterpret_cast<jclass>(env->NewGlobalRef(cardboard::jni::LoadJClass(

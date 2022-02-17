@@ -74,6 +74,7 @@ public abstract class CardboardParamsUtils {
   private static final int HTTPS_TIMEOUT_MS = 5 * 1000;
 
   /** Enum to determine which storage source to use. */
+  // TODO(b/167382867): Make it private and modify tests.
   private enum StorageSource {
     SCOPED_STORAGE,
     EXTERNAL_STORAGE
@@ -309,6 +310,7 @@ public abstract class CardboardParamsUtils {
    *     StorageSource.SCOPED_STORAGE} via {@code Context.getFilesDir()}.
    * @return The stored params. Null if the params do not exist or the read fails.
    */
+  // TODO(b/167382867): Make it private and modify tests.
   private static byte[] readDeviceParamsFromStorage(
       StorageSource storageSource, Context context) {
     byte[] paramBytes = null;
@@ -420,6 +422,7 @@ public abstract class CardboardParamsUtils {
    *     VERSION_CODES.Q} via {@code Context.getFilesDir()}.
    * @return whether the parameters were successfully written.
    */
+  // TODO(b/167382867): Make it private and modify tests.
   private static boolean writeDeviceParamsToStorage(
       byte[] paramBytes, StorageSource storageSource, Context context) {
     boolean success = false;

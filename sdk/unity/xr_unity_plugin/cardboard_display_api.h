@@ -297,8 +297,8 @@ void CardboardUnity_setWidgetCount(int count);
 /// @brief Sets the the parameters of how to draw a specific widget.
 ///
 /// @param[in] i The widget index to set.
-/// @param[in] texture The widget texture as a Shape.GetNativeTexturePtr, @see
-///            https://docs.unity3d.com/ScriptReference/Shape.GetNativeTexturePtr.html.
+/// @param[in] texture The widget texture as a Texture.GetNativeTexturePtr, @see
+///            https://docs.unity3d.com/ScriptReference/Texture.GetNativeTexturePtr.html.
 /// @param[in] x x coordinate in pixels of the lower left corner of the
 ///            rectangle.
 /// @param[in] y y coordinate in pixels of the lower left corner of the

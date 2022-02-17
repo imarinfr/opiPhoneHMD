@@ -40,6 +40,7 @@ typedef enum FragmentInputIndex {
   FragmentInputIndexTexture = 0,
 } FragmentInputIndex;
 
+// TODO(b/178125083): Revisit Metal shader approach.
 /// @brief Vertex and fragment shaders for rendering the widgets when using Metal.
 constexpr const char* kMetalShaders =
     R"msl(#include <metal_stdlib>
@@ -211,6 +212,7 @@ class MetalRenderer : public Renderer {
     eye_ = eye_ == kLeft ? kRight : kLeft;
 
     // Create a black texture. It is used to hide a rendering previously performed by Unity.
+    // TODO(b/185478026): Prevent Unity from drawing a monocular scene when using Metal.
     MTLTextureDescriptor* black_texture_descriptor = [MTLTextureDescriptorClass new];
     black_texture_descriptor.textureType = MTLTextureType2D;
     black_texture_descriptor.width = screen_width;
@@ -243,6 +245,7 @@ class MetalRenderer : public Renderer {
                            const CardboardEyeTextureDescription* left_eye,
                            const CardboardEyeTextureDescription* right_eye) override {
     // Render black texture. It is used to hide a rendering previously performed by Unity.
+    // TODO(b/185478026): Prevent Unity from drawing a monocular scene when using Metal.
     RenderBlackTexture(screen_params.width, screen_params.height);
 
     const CardboardMetalDistortionRendererTargetConfig target_config{

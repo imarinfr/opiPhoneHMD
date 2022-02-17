@@ -131,6 +131,7 @@ class CardboardInputProvider {
     std::array<float, 3> out_position;
     cardboard_input_api_->GetHeadTrackerPose(out_position.data(),
                                              out_orientation.data());
+    // TODO(b/151817737): Compute pose position within SDK with custom rotation.
     head_pose_ =
         cardboard::unity::CardboardRotationToUnityPose(out_orientation);
     return kUnitySubsystemErrorCodeSuccess;

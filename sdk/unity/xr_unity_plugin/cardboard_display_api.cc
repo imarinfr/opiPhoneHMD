@@ -155,7 +155,7 @@ void CardboardDisplayApi::UpdateDeviceParams() {
       break;
 #if defined(__APPLE__)
     case CardboardGraphicsApi::kMetal:
-      distortion_renderer.reset(
+      distortion_renderer_.reset(
           MakeCardboardMetalDistortionRenderer(xr_interfaces_));
       break;
 #endif

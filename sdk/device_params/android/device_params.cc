@@ -31,6 +31,7 @@ JavaVM* vm_;
 jobject context_;
 jclass device_params_utils_class_;
 
+// TODO(b/180938531): Release this global reference.
 void LoadJNIResources(JNIEnv* env) {
   device_params_utils_class_ =
       reinterpret_cast<jclass>(env->NewGlobalRef(jni::LoadJClass(
@@ -39,6 +40,7 @@ void LoadJNIResources(JNIEnv* env) {
 
 }  // anonymous namespace
 
+// TODO(b/181575962): Add C++ unit tests.
 DeviceParams::~DeviceParams() {
   JNIEnv* env;
   jni::LoadJNIEnv(vm_, &env);
@@ -77,6 +79,7 @@ void DeviceParams::ParseFromArray(const uint8_t* encoded_device_params,
   java_device_params_ = env->NewGlobalRef(device_params_obj);
 }
 
+// TODO(b/181658993): Check if JNI "execution + exception check" could be
 // wrapped within a reusable function or macro.
 float DeviceParams::screen_to_lens_distance() const {
   JNIEnv* env;

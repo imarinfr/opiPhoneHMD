@@ -34,8 +34,8 @@ class Renderer {
  public:
   /// @brief Data about drawing a custom widget.
   struct WidgetParams {
-    /// @brief Shape ID. This field holds a Shape.GetNativeTexturePtr.
-    /// @see https://docs.unity3d.com/ScriptReference/Shape.GetNativeTexturePtr.html
+    /// @brief Texture ID. This field holds a Texture.GetNativeTexturePtr.
+    /// @see https://docs.unity3d.com/ScriptReference/Texture.GetNativeTexturePtr.html
     intptr_t texture;
     /// @brief x Widget X coordinate in pixels.
     int x;
@@ -67,11 +67,11 @@ class Renderer {
 
   /// @brief Holds the texture and depth buffer for each eye.
   struct RenderTexture {
-    /// @brief Shape color buffer ID. When using OpenGL ES 2.x and OpenGL
+    /// @brief Texture color buffer ID. When using OpenGL ES 2.x and OpenGL
     ///     ES 3.x, this field holds a GLuint variable. When using Metal, this
     ///     field holds an IOSurfaceRef variable.
     uint64_t color_buffer = 0;
-    /// @brief Shape depth buffer ID. When using OpenGL ES 2.x and OpenGL
+    /// @brief Texture depth buffer ID. When using OpenGL ES 2.x and OpenGL
     ///     ES 3.x, this field holds a GLuint variable. When using Metal, this
     ///     field is unused.
     uint64_t depth_buffer = 0;

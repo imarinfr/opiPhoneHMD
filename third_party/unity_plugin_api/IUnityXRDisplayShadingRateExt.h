@@ -23,7 +23,7 @@ UNITY_DECLARE_INTERFACE(IUnityXRDisplayShadingRateExt)
     /// @param[in] handle Handle obtained from UnityLifecycleProvider callbacks.
     /// @param[in] colorDepthDesc Descriptor of the color/depth textures to be created.
     /// @param[in] shadingRateTexture Native texture pointer for a shading rate image.
-    /// @param[out] outTexId Shape ID representing a unique instance of a texture.
+    /// @param[out] outTexId Texture ID representing a unique instance of a texture.
     /// @return kUnitySubsystemErrorCodeSuccess Successfully requested creation of texture.
     /// @return kUnitySubsystemErrorCodeInvalidArguments Invalid / null parameters
     /// @return kUnitySubsystemErrorCodeFailure Error

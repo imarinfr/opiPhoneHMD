@@ -98,6 +98,8 @@ void SensorEventProducer<AccelerometerData>::WorkFn() {
   std::vector<AccelerometerData> sensor_events_vec;
 
   // On other devices and platforms we estimate the clock bias.
+  // TODO(b/135468657): Investigate clock conversion. Old cardboard doesn't have
+  // this.
   while (event_producer_->run_thread) {
     sensor.PollForSensorData(kMaxWaitMilliseconds, &sensor_events_vec);
     for (AccelerometerData& event : sensor_events_vec) {
@@ -121,6 +123,8 @@ void SensorEventProducer<GyroscopeData>::WorkFn() {
   std::vector<GyroscopeData> sensor_events_vec;
 
   // On other devices and platforms we estimate the clock bias.
+  // TODO(b/135468657): Investigate clock conversion. Old cardboard doesn't have
+  // this.
   while (event_producer_->run_thread) {
     sensor.PollForSensorData(kMaxWaitMilliseconds, &sensor_events_vec);
     for (GyroscopeData& event : sensor_events_vec) {

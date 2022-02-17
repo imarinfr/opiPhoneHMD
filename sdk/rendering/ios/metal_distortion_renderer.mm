@@ -43,6 +43,7 @@ typedef struct Vertex {
   vector_float2 tex_coords;
 } Vertex;
 
+// TODO(b/178125083): Revisit Metal shader approach.
 constexpr const char* kMetalShaders =
     R"msl(#include <metal_stdlib>
     #include <simd/simd.h>

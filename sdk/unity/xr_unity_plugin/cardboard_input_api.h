@@ -50,6 +50,7 @@ class CardboardInputApi {
   ///             the position of the head.
   /// @param[out] orientation A pointer to an array with four floats to fill in
   ///             the quaternion that denotes the orientation of the head.
+  // TODO(b/154305848): Move argument types to std::array*.
   void GetHeadTrackerPose(float* position, float* orientation);
 
   /// @brief Sets the viewport orientation that will be used.
