@@ -1,5 +1,5 @@
-# opiPhoneVR
-OPI server on Phone (Android platform). Requires a VR headset that is compatible
+# opiPhoneHMD
+OPI server on Phone (Android platform). Requires a head-mounted headset that is compatible
 with Google Cardboard.
 
 - Server: Android phone

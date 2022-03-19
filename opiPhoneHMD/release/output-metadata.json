@@ -13,7 +13,7 @@
       "attributes": [],
       "versionCode": 1,
       "versionName": "Android OPI NDK",
-      "outputFile": "opi-release.apk"
+      "outputFile": "opiPhoneHMD-release.apk"
     }
   ],
   "elementType": "File"
