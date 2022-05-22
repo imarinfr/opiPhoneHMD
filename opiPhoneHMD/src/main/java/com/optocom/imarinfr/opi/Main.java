@@ -1,16 +1,29 @@
 package com.optocom.imarinfr.opi;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.PopupMenu;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     static {
@@ -22,10 +35,14 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
     private GLSurfaceView glView;
 
     private SensorListener sensorListener;
+    private Renderer renderer;
+
+    private static final int PERMISSIONS_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+
         // get the connection to native methods
         nativeApp = nativeOnCreate();
         setContentView(R.layout.activity_vr);
@@ -34,7 +51,7 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         glView.setEGLConfigChooser(8, 8, 8, 8, 16, 8);
         glView.setEGLContextClientVersion(3);
         // Set up connections to OPI R, renderer, and controller
-        Renderer renderer = new Renderer(nativeApp, glView);
+        renderer = new Renderer(nativeApp, glView);
         glView.setRenderer(renderer);
         glView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         glView.setFocusable(true); // TODO: see if we can get the volume up and down
@@ -73,6 +90,16 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
     @Override
     protected void onResume() {
         super.onResume();
+
+        // On Android P and below, checks for activity to READ_EXTERNAL_STORAGE. When it is not granted,
+        // the application will request them. For Android Q and above, READ_EXTERNAL_STORAGE is optional
+        // and scoped storage will be used instead. If it is provided (but not checked) and there are
+        // device parameters saved in external storage those will be migrated to scoped storage.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && !isReadExternalStorageEnabled()) {
+            requestPermissions();
+            return;
+        }
+
         glView.onResume();
         nativeOnResume(nativeApp);
         sensorListener.getSensorManager().registerListener(sensorListener,
@@ -83,6 +110,7 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
     protected void onDestroy() {
         super.onDestroy();
         nativeOnDestroy(nativeApp);
+        nativeApp = 0;
     }
 
     @Override
@@ -91,6 +119,11 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         if (hasFocus) {
             setImmersiveSticky();
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -112,6 +145,28 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
             v.performClick();
             return true;
         } else return false;
+    }
+
+    //Override onKeyDown and onKeyUp to intercept a hardware key (in this case volume up) to simulate a button press
+    //Most bluetooth camera shutter remotes use the volume up key, but any key press can be intercepted
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_VOLUME_UP) {
+            renderer.onTriggerEvent();
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_VOLUME_UP) {
+            renderer.onTriggerEvent();
+            return true;
+        } else {
+            return super.onKeyUp(keyCode, event);
+        }
     }
 
     // Callback for when close button is pressed
@@ -153,6 +208,46 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
                                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    private boolean isReadExternalStorageEnabled() {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /** Handles the requests for activity permission to READ_EXTERNAL_STORAGE. */
+    private void requestPermissions() {
+        final String[] permissions = new String[] {Manifest.permission.READ_EXTERNAL_STORAGE};
+        ActivityCompat.requestPermissions(this, permissions, PERMISSIONS_REQUEST_CODE);
+    }
+
+    /**
+     * Callback for the result from requesting permissions.
+     *
+     * <p>When READ_EXTERNAL_STORAGE permission is not granted, the settings view will be launched
+     * with a toast explaining why it is required.
+     */
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (!isReadExternalStorageEnabled()) {
+            Toast.makeText(this, R.string.read_storage_permission, Toast.LENGTH_LONG).show();
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                    this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Permission denied with checking "Do not ask again". Note that in Android R "Do not ask
+                // again" is not available anymore.
+                launchPermissionsSettings();
+            }
+            finish();
+        }
+    }
+
+    private void launchPermissionsSettings() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", getPackageName(), null));
+        startActivity(intent);
     }
 
     // native interfaces

@@ -32,7 +32,8 @@
             android:label="@string/title_activity_vr"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="landscape"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER" />
