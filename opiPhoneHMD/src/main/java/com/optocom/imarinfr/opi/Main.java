@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
@@ -36,6 +38,8 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
 
     private SensorListener sensorListener;
     private Renderer renderer;
+    private ToneGenerator toneGenerator;
+    private boolean activePress = false;
 
     private static final int PERMISSIONS_REQUEST_CODE = 2;
 
@@ -59,6 +63,9 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         //glView.setOnKeyListener(this);  // TODO: see if we can get the volume up and down
         glView.setOnClickListener(v->renderer.onTriggerEvent());
         //TODO: performance issues?
+
+        toneGenerator = new ToneGenerator(AudioManager.STREAM_SYSTEM,80);
+
         setImmersiveSticky();
         View decorView = getWindow().getDecorView();
         decorView.setOnSystemUiVisibilityChangeListener(
@@ -149,10 +156,15 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
 
     //Override onKeyDown and onKeyUp to intercept a hardware key (in this case volume up) to simulate a button press
     //Most bluetooth camera shutter remotes use the volume up key, but any key press can be intercepted
+    //Boolean present to prevent button being held down
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_VOLUME_UP) {
-            renderer.onTriggerEvent();
+            if(!activePress) {
+                renderer.onTriggerEvent();
+                toneGenerator.startTone(ToneGenerator.TONE_CDMA_SOFT_ERROR_LITE,50);
+                activePress = true;
+            }
             return true;
         } else {
             return super.onKeyDown(keyCode, event);
@@ -162,7 +174,8 @@ public class Main extends AppCompatActivity implements PopupMenu.OnMenuItemClick
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_VOLUME_UP) {
-            renderer.onTriggerEvent();
+            //renderer.onTriggerEvent();
+            activePress = false;
             return true;
         } else {
             return super.onKeyUp(keyCode, event);
